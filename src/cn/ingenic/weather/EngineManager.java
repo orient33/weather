@@ -154,7 +154,9 @@ public class EngineManager {
 	
 	public void checkNotifyWeather(){
 		City city = getDefaultMarkCity();
-		if(city.weather == null){
+        if(city == null){
+            return;
+        }else if(city.weather == null){
 			this.register(new DataChangedListener(){
 
 				@Override
@@ -170,6 +172,7 @@ public class EngineManager {
 					
 				}
 			});
+            return;
 		}
 		Weather weather = city.weather.get(0);
 		if(WeatherUtils.isBadWeather(weather)){
