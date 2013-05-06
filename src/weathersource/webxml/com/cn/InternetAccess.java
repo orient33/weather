@@ -37,7 +37,7 @@ public class InternetAccess {
 	
 	private Context mContext;
 	
-	private static final boolean onWatch = false;
+	private static final boolean onWatch = true;
 	
 	private Handler mHandler = new Handler(Looper.getMainLooper()){
 
