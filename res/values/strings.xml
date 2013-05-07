@@ -62,4 +62,6 @@
     
     <string name="unknown">unknown</string>
     <string name="initing">Initing...</string>
+
+    <string name="weather_warning">Weather warning</string>
 </resources>

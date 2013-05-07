@@ -98,6 +98,9 @@ public class WeatherDisplay extends Activity implements OnClickListener,
 	    }else if(!mEngine.isRequesting()){
 	    	mEngine.getWeatherByIndex(city.index);
 	    }
+	    if(getIntent().getBooleanExtra("notification", false)){
+		    mEngine.clearWeahterNotif();
+	    }
 	}
 
 

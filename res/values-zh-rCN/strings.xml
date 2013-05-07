@@ -61,4 +61,5 @@
     
     <string name="unknown">未知</string>
     <string name="initing">正在初始化</string>
+    <string name="weather_warning">恶劣天气提醒</string>
 </resources>

@@ -5,11 +5,13 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
+import android.graphics.BitmapFactory;
 import android.os.Looper;
 import android.os.Message;
 import cn.ingenic.weather.engine.City;
@@ -181,8 +183,34 @@ public class EngineManager {
 		}
 		Weather weather = city.weather.get(0);
 		if(WeatherUtils.isBadWeather(weather)){
-			//TODO:notify lock screen
-		}
+			notifyWeather(city);
+		} 
+	}
+	
+	private void notifyWeather(City city){
+		Weather weather = city.weather.get(0);
+		NotificationManager notifManager = (NotificationManager)mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+		
+		Intent i = new Intent(mContext, WeatherDisplay.class);
+		i.putExtra("notification", true);
+		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+		
+		PendingIntent intent = PendingIntent.getActivity(mContext, 0, i, PendingIntent.FLAG_CANCEL_CURRENT);
+		
+		Notification.Builder builder = new Notification.Builder(mContext);
+		Notification notif = builder.setContentTitle(mContext.getString(R.string.weather_warning))
+				.setContentText(city.name+" "+WeatherUtils.getWeather(mContext, weather.weather))
+				.setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), WeatherUtils.getMDrawable(weather.weather)))
+				.setSmallIcon(WeatherUtils.getMDrawable(weather.weather))
+				.setContentIntent(intent)
+				.build();
+				
+		notifManager.notify(1, notif);
+	}
+	
+	public void clearWeahterNotif(){
+		NotificationManager notifManager = (NotificationManager)mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+		notifManager.cancelAll();
 	}
 	
 	public void refreshWeather(){
