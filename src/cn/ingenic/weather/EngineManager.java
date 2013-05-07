@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
+import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import cn.ingenic.weather.engine.City;
@@ -61,13 +62,33 @@ public class EngineManager {
 		void onStateChanged(boolean isRequesting);
 	}
 	
+	private void notifyWeatherChanged(City city) {
+		synchronized (mListeners) {
+			for (DataChangedListener listener : mListeners) {
+				listener.onWeatherChanged(city);
+			}
+		}
+	}
+	
+	private void notifyStateChanged(boolean isRequesting){
+		synchronized(mListeners){
+			for(DataChangedListener listener : mListeners){
+				listener.onStateChanged(isRequesting);
+			}
+		}
+	}
+	
 	public void register(DataChangedListener listener){
-		mListeners.add(listener);
-		listener.onStateChanged(isRequesting);
+		synchronized(mListeners){
+			mListeners.add(listener);
+			listener.onStateChanged(isRequesting);
+		}
 	}
 	
 	public void unRegister(DataChangedListener listener){
-		mListeners.remove(listener);
+		synchronized(mListeners){
+			mListeners.remove(listener);
+		}
 	}
 	
 	public void init(final Message callback){
@@ -108,9 +129,7 @@ public class EngineManager {
 	 */
 	synchronized public void getWeatherByIndex(final String index){
 		isRequesting = true;
-		for(DataChangedListener listener : mListeners){
-			listener.onStateChanged(isRequesting);
-		}
+		notifyStateChanged(isRequesting);
 		new Thread(){
 			@Override
 			public void run() {
@@ -127,10 +146,8 @@ public class EngineManager {
 					mCache.cacheWeather(city);
 				}
 				isRequesting = false;
-				for(DataChangedListener listener : mListeners){
-					listener.onWeatherChanged(city);
-					listener.onStateChanged(isRequesting);
-				}
+				notifyWeatherChanged(city);
+				notifyStateChanged(isRequesting);
 				Looper.loop();
 			}
 		}.start();
