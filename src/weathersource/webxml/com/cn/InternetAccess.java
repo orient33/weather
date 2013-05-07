@@ -87,7 +87,7 @@ public class InternetAccess {
 		
 		synchronized(mRequestLock){
 			try {
-				mRequestLock.wait(20*1000);
+				mRequestLock.wait(40*1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

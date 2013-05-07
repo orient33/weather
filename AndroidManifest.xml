@@ -35,6 +35,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="cn.indroid.action.updateweather"/>
                 <action android:name="cn.indroid.action.notifyweather"/>
+                <action android:name="cn.indroid.action.weather.freshwidgettime"/>
             </intent-filter>
         </receiver>
         <activity android:name="cn.ingenic.weather.SettingsActivity"></activity>

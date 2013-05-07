@@ -89,7 +89,7 @@ public class SourceWebXml implements WeatherSource {
 		String response = mAccess.request(getWeatherUrl(index));
 		if(!TextUtils.isEmpty(response)){
 			klilog.i("response = "+response);
-			WeatherParser.parser(city, response);
+			WeatherParser.parser(city, response, mContext);
 		}else{
 			klilog.i("error respose null");
 		}

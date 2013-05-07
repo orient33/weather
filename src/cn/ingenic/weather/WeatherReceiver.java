@@ -16,6 +16,8 @@ public class WeatherReceiver extends BroadcastReceiver {
 			EngineManager.getInstance(context).refreshWeather();
 		}else if(EngineManager.ACTION_NOTIFY_WEATHER.equals(action)){
 			EngineManager.getInstance(context).checkNotifyWeather();
+		}else if(EngineManager.ACTION_FRESH_WIDGET_TIME.equals(action)){
+			EngineManager.getInstance(context).updateWidget();
 		}
 	}
 

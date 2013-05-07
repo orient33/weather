@@ -112,7 +112,7 @@ public class WeatherDisplay extends Activity implements OnClickListener,
 		
 		Weather firstWeather = city.weather.get(0);
 		Weather secondWeather = city.weather.get(1);
-		SimpleDateFormat sdf = new SimpleDateFormat("MM‘¬dd»’");
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd");
 		
 		//current weather
 		TextView cityName = (TextView)findViewById(R.id.tv_city_name);

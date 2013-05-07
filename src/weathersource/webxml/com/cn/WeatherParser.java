@@ -8,6 +8,10 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import android.content.Context;
+import android.text.TextUtils;
+
+import cn.ingenic.weather.R;
 import cn.ingenic.weather.engine.City;
 import cn.ingenic.weather.engine.Weather;
 
@@ -20,16 +24,16 @@ public class WeatherParser {
 	/*2013/03/27 16:40:41*/
 	private final static int NOW = 3;
 	
-	/*½ñÈÕÌìÆøÊµ¿ö£ºÆøÎÂ£º20¡æ£»·çÏò/·çÁ¦£ºÎ÷·ç 4¼¶£»Êª¶È£º29%*/
+	/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â£ï¿½20ï¿½æ£»ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 4ï¿½ï¿½ï¿½ï¿½Êªï¿½È£ï¿½29%*/
 	private final static int WEATHER_DETAIL = 4;
 	private final static int AIR = 5;
 	private final static int MORE_INFO = 6;
 	
-	/*3ÔÂ27ÈÕ Çç×ª¶àÔÆ*/
+	/*3ï¿½ï¿½27ï¿½ï¿½ ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½*/
 	private final static int DAY_1 = 7;
-	/*6¡æ/20¡æ*/
+	/*6ï¿½ï¿½/20ï¿½ï¿½*/
 	private final static int DAY_1_TEMP = 8;
-	/*Î÷ÄÏ·ç3-4¼¶*/
+	/*ï¿½ï¿½ï¿½Ï·ï¿½3-4ï¿½ï¿½*/
 	private final static int DAY_1_WIND = 9;
 	private final static int DAY_1_PIC1 = 10;
 	private final static int DAY_1_PIC2 = 11;
@@ -62,8 +66,21 @@ public class WeatherParser {
 		{DAY_2, DAY_2_TEMP, DAY_2_WIND, DAY_2_PIC1, DAY_2_PIC2}, {DAY_3, DAY_3_TEMP, DAY_3_WIND, DAY_3_PIC1, DAY_3_PIC2}, 
 		{DAY_4, DAY_4_TEMP, DAY_4_WIND, DAY_4_PIC1, DAY_4_PIC2}, {DAY_5, DAY_5_TEMP, DAY_5_WIND, DAY_5_PIC1, DAY_5_PIC2}};
 	
-	public static MyCity parser(MyCity city, String source){
 
+	public static MyCity parser(MyCity city, String source){
+		return parser(city, source, null);
+	}
+	
+	public static MyCity parser(MyCity city, String source, Context context){
+		String sheshidu = null;
+		if(context != null){
+			sheshidu = context.getString(R.string.sheshidu);
+		}
+		
+		if(TextUtils.isEmpty(sheshidu)){
+			sheshidu = "ï¿½ï¿½";
+		}
+		
 		try {
 			List<String> infos = new StringArrayXmlParser(source).parser();
 
@@ -90,8 +107,9 @@ public class WeatherParser {
 				// currentTemp
 				if (i == 0) {
 					String details = infos.get(WEATHER_DETAIL);
-					int p_end = details.indexOf("¡æ");
-					int p_start = details.indexOf("ÆøÎÂ£º") + "ÆøÎÂ£º".length();
+					int p_end = details.indexOf(sheshidu);
+					String qiwen = context.getString(R.string.qiwen_separator);
+					int p_start = details.indexOf(qiwen) + qiwen.length();
 					try {
 						weather.currentTemp = details.substring(p_start, p_end);
 					} catch (Exception e) {
@@ -104,8 +122,8 @@ public class WeatherParser {
 				// minTemp;
 				String temps = infos.get(DAYS_WEATHER[i][1]);
 				String[] temp = temps.split("/");
-				weather.minTemp = temp[0].substring(0, temp[0].indexOf("¡æ"));
-				weather.maxTemp = temp[1].substring(0, temp[1].indexOf("¡æ"));
+				weather.minTemp = temp[0].substring(0, temp[0].indexOf(sheshidu));
+				weather.maxTemp = temp[1].substring(0, temp[1].indexOf(sheshidu));
 
 				// weather;
 				// String weatherDay = infos.get(DAYS_WEATHER[i][0]);

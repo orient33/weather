@@ -39,7 +39,8 @@
     
     <string name="weather_to">to</string>
     <string name="sheshidu">℃</string>
-    
+    <string name="qiwen_separator">气温：</string>
+
     <string name="error">error！</string>
     
     <!-- settings -->

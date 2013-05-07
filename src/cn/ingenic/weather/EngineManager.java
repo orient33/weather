@@ -20,6 +20,8 @@ public class EngineManager {
 	//actions
 	public final static String ACTION_UPDATE_WEATHER = "cn.indroid.action.updateweather";
 	public final static String ACTION_NOTIFY_WEATHER = "cn.indroid.action.notifyweather";
+	public final static String ACTION_FRESH_WIDGET_TIME = "cn.indroid.action.weather.freshwidgettime";
+	public final static String ACTION_FRESH_WIDGET = "cn.indroid.action.weather.freshwidget";
 	
 	//shared prefs
 	private final static String ENGINE_MANAGER = "engine_manager";
@@ -42,6 +44,7 @@ public class EngineManager {
 		mCache = new CacheManager(mContext);
 		mEngine = WeatherEngine.getInstance(mContext);
 		initNotifyAlarm();
+		freshWidgetInit();
 	}
 	
 	public static EngineManager getInstance(Context context){
@@ -116,6 +119,8 @@ public class EngineManager {
 				changeUpdateTime(System.currentTimeMillis());
 				
 				if(city != null && city.weather != null){
+					//notify widget
+					updateWidget(city);
 					//cache weather
 					mCache.cacheWeather(city);
 				}
@@ -190,6 +195,43 @@ public class EngineManager {
 	private void changeUpdateTime(long time){
 		setUpdateTime(time);
 		freshAlarmTime();
+	}
+	
+	public void updateWidget(){
+		updateWidget(getDefaultMarkCity());
+	}
+	
+	private void updateWidget(City city){
+		Intent intent = new Intent(ACTION_FRESH_WIDGET);
+		if(city != null && city.weather != null){
+			String sheshidu = mContext.getString(R.string.sheshidu);
+			Weather weather = city.weather.get(0);
+			intent.putExtra("city", city.name);
+			intent.putExtra("weather", WeatherUtils.getWeather(mContext, weather.weather));
+			intent.putExtra("current_temp", weather.currentTemp+sheshidu);
+			intent.putExtra("max_temp", weather.maxTemp+sheshidu);
+			intent.putExtra("min_temp", weather.minTemp+sheshidu);
+			intent.putExtra("icon", WeatherUtils.getHDrawable(weather.weather));
+		}
+		mContext.sendBroadcast(intent);
+	}
+	
+	private void freshWidgetInit() {
+		AlarmManager am = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
+		Intent intent = new Intent(ACTION_FRESH_WIDGET_TIME);
+		PendingIntent sender = PendingIntent.getBroadcast(mContext, 0, intent,
+				PendingIntent.FLAG_CANCEL_CURRENT);
+		int interval = 1*60*60*1000;
+
+		Calendar notify = Calendar.getInstance();
+		notify.add(Calendar.HOUR_OF_DAY, 1);
+		notify.set(Calendar.MINUTE, 0);
+		notify.set(Calendar.SECOND, 0);
+		notify.set(Calendar.MILLISECOND, 0);
+		
+		am.setRepeating(AlarmManager.RTC_WAKEUP, notify.getTimeInMillis(), interval, sender);
+		
+		
 	}
 	
 	private void freshAlarmTime() {
