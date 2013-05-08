@@ -257,6 +257,13 @@ public class EngineManager {
 			intent.putExtra("max_temp", weather.maxTemp+sheshidu);
 			intent.putExtra("min_temp", weather.minTemp+sheshidu);
 			intent.putExtra("icon", WeatherUtils.getHDrawable(weather.weather));
+		}else{
+//			intent.putExtra("city", mContext.getString(R.string.unknown));
+//			intent.putExtra("weather", mContext.getString(R.string.unknown));
+//			intent.putExtra("current_temp", mContext.getString(R.string.unknown));
+//			intent.putExtra("max_temp", mContext.getString(R.string.unknown));
+//			intent.putExtra("min_temp", mContext.getString(R.string.unknown));
+//			intent.putExtra("icon", R.drawable.l_nothing);
 		}
 		mContext.sendBroadcast(intent);
 	}

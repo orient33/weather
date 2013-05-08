@@ -32,7 +32,7 @@ public class WeatherUtils {
 		try {
 			int weatherId = Integer.parseInt(weather.split(",")[0]);
 			res = getHDrawable(weatherId);
-		} catch (NumberFormatException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return res;
