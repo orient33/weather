@@ -9,7 +9,9 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.RemoteViews;
 
 public class WidgetProvider extends AppWidgetProvider {
@@ -70,76 +72,23 @@ public class WidgetProvider extends AppWidgetProvider {
 	
 	private void updateWidgetWeather(Context context, Bundle bundle){
 		klilog.i("updateWidgetWeather");
-		//prepare data to display
-		RemoteViews rv = getRemoteView(context);
-		if(bundle != null){
-			rv.setTextViewText(R.id.tv_city, bundle.getString("city"));
-			rv.setTextViewText(R.id.tv_weather, bundle.getString("weather"));
-			rv.setTextViewText(R.id.tv_current, bundle.getString("current_temp"));
-			rv.setTextViewText(R.id.tv_maxmin, bundle.getString("min_temp")+"|"+
-					bundle.getString("max_temp"));
-			int icon = bundle.getInt("icon", 0);
-			if(icon != 0){
-				rv.setImageViewResource(R.id.iv_icon, icon);
-			}
-		}
-
-		notifyWidget(context, rv);
+		WidgetViewBuilder builder = getDefaultBuilder(context);
+		builder.setWeather(bundle);
+		notifyWidget(context, builder.build());
 	}
-
+	
 	private void updateWidgetTime(Context context){
 		klilog.i("updateWidgetWeather");
-		//prepare data to display
-		RemoteViews rv = getRemoteView(context);
-		Calendar c = Calendar.getInstance();
-		int hour = c.get(Calendar.HOUR_OF_DAY);
-		int minite = c.get(Calendar.MINUTE);
-		rv.setImageViewResource(R.id.iv_time_1, getNumPic(hour/10));
-		rv.setImageViewResource(R.id.iv_time_2, getNumPic(hour%10));
-		rv.setImageViewResource(R.id.iv_time_3, getNumPic(minite/10));
-		rv.setImageViewResource(R.id.iv_time_4, getNumPic(minite%10));
-		notifyWidget(context, rv);
+		WidgetViewBuilder builder = getDefaultBuilder(context);
+		builder.setUpdateTime(true);
+		notifyWidget(context, builder.build());
 		setWidgetUpdateTime(context);
 	}
 	
-	private int getNumPic(int num){
-		int res = 0;
-		switch(num){
-		case 0:
-			res = R.drawable.widget_num_0;
-			break;
-		case 1:
-			res = R.drawable.widget_num_1;
-			break;
-		case 2:
-			res = R.drawable.widget_num_2;
-			break;
-		case 3:
-			res = R.drawable.widget_num_3;
-			break;
-		case 4:
-			res = R.drawable.widget_num_4;
-			break;
-		case 5:
-			res = R.drawable.widget_num_5;
-			break;
-		case 6:
-			res = R.drawable.widget_num_6;
-			break;
-		case 7:
-			res = R.drawable.widget_num_7;
-			break;
-		case 8:
-			res = R.drawable.widget_num_8;
-			break;
-		case 9:
-			res = R.drawable.widget_num_9;
-			break;
-		}
-		return res;
-	}
-	
 	private void notifyWidget(Context context, RemoteViews rv){
+		if(rv == null){
+			return;
+		}
 		//update widget
 		AppWidgetManager awm = AppWidgetManager.getInstance(context);
 		int[] appIds = awm.getAppWidgetIds(new ComponentName(context, WidgetProvider.class));
@@ -160,19 +109,42 @@ public class WidgetProvider extends AppWidgetProvider {
 		am.setRepeating(AlarmManager.RTC_WAKEUP, notify.getTimeInMillis(), interval, sender);
 	}
 	
-	private void removeWidgetUpdateTime(Context context){
-		AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-		PendingIntent pi = getUpdateTimePendingIntent(context);
-		am.cancel(pi);
-	}
-	
 	private PendingIntent getUpdateTimePendingIntent(Context context){
 		Intent intent = new Intent(ACTION_UPDATE_TIME);
 		return  PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 	}
 	
-	private RemoteViews getRemoteView(Context context){
-		RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_time_weather);
-		return rv;
+	private WidgetViewBuilder getDefaultBuilder(Context context){
+		WidgetViewBuilder builder = new WidgetViewBuilder(context);
+		builder.setLayout(R.layout.widget_layout);
+		int[] numRes = {R.drawable.n0, R.drawable.n1, R.drawable.n2, 
+				R.drawable.n3, R.drawable.n4, R.drawable.n5, R.drawable.n6, 
+				R.drawable.n7, R.drawable.n8, R.drawable.n9, 
+				R.drawable.am, R.drawable.pm};
+		builder.setNumRes(numRes);
+		return builder;
 	}
+	
+	
+	private WidgetViewBuilder getRemoteSkin(Context context) {
+		try {
+			Context remoteContext = context.createPackageContext("cn.ingenic.weather.skin.styleyu",
+					Context.CONTEXT_IGNORE_SECURITY|Context.CONTEXT_INCLUDE_CODE);
+			
+			WidgetViewBuilder builder = new WidgetViewBuilder(context);
+			builder.setRemoteContext(remoteContext);
+			builder.setLayout(R.layout.widget_layout);
+			
+			int[] numRes = { R.drawable.n0, R.drawable.n1, R.drawable.n2,
+					R.drawable.n3, R.drawable.n4, R.drawable.n5, R.drawable.n6,
+					R.drawable.n7, R.drawable.n8, R.drawable.n9, R.drawable.am,
+					R.drawable.pm };
+			builder.setNumRes(numRes);
+			return builder;
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 }

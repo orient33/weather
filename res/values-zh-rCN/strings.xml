@@ -61,5 +61,20 @@
     
     <string name="unknown">未知</string>
     <string name="initing">正在初始化</string>
-    <string name="weather_warning">恶劣天气提醒</string>
+    <string name="weather_warning">恶劣天气提醒</string>    
+    
+    <string name="today">今天</string>
+    
+    <string-array name="weekday">
+        <item>周日</item>
+        <item>周一</item>
+        <item>周二</item>
+        <item>周三</item>
+        <item>周四</item>
+        <item>周五</item>
+        <item>周六</item>
+    </string-array>
+    
+    <string name="date_format">MM月dd日</string>
+    
 </resources>

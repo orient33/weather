@@ -3,6 +3,6 @@
     android:minWidth="100dp"
     android:minHeight="36dp"
     android:updatePeriodMillis="86400000"
-    android:initialLayout="@layout/widget_time_weather">
+    android:initialLayout="@layout/widget_layout">
 
 </appwidget-provider>
