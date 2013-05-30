@@ -47,6 +47,7 @@
     <string name="current_city">当前城市：%s</string>
     <string name="settings_update_frequency">更新频率</string>
     <string name="current_update_frequency">当前频率：%s小时</string>
+    <string name="settings_style">风格</string>
     <string-array name="update_frequency_list">
         <item>2小时</item>
         <item>4小时</item>
@@ -76,5 +77,5 @@
     </string-array>
     
     <string name="date_format">MM月dd日</string>
-    
+    <string name="no_weather_data">无天气数据</string>
 </resources>

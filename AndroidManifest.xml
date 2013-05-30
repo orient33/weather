@@ -43,13 +43,22 @@
         <receiver android:name="WidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="cn.kli.weatherwidget.update_time" />
+                <action android:name="cn.ingenic.weatherwidget.update_time" />
                 <action android:name="cn.indroid.action.weather.freshwidget" />
+                <action android:name="cn.ingenic.weatherwidget.update_skin"  />
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_time_weather_provider" />
+        </receiver>
+        <activity android:name="StyleChooseActivity"></activity>
+        <receiver android:name="AppChangedReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                <data android:scheme="package" />
+            </intent-filter>
         </receiver>
     </application>
 

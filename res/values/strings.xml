@@ -48,6 +48,7 @@
     <string name="current_city">Current city:%s</string>
     <string name="settings_update_frequency">Update rate</string>
     <string name="current_update_frequency">Current rate:%s hour</string>
+    <string name="settings_style">Style</string>
     <string-array name="update_frequency_list">
         <item>2hour</item>
         <item>4hour</item>
@@ -78,4 +79,5 @@
     <string name="date_format">MM-dd</string>
     
     <string name="min_to_max">/</string>
+    <string name="no_weather_data">No weather data</string>
 </resources>

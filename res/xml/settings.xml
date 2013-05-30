@@ -15,4 +15,13 @@
         android:entries="@array/update_frequency_list"
         android:entryValues="@array/update_frequency_value"/>
 
+    <!--
+    <Preference
+        android:key="select_style"
+        android:title="@string/settings_style" >
+        <intent
+            android:targetClass="cn.ingenic.weather.StyleChooseActivity"
+            android:targetPackage="cn.ingenic.weather" />
+    </Preference>
+    -->
 </PreferenceScreen>

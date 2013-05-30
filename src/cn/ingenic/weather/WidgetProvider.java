@@ -15,14 +15,17 @@ import android.widget.Button;
 import android.widget.RemoteViews;
 
 public class WidgetProvider extends AppWidgetProvider {
-	private final static String ACTION_UPDATE_TIME = "cn.kli.weatherwidget.update_time";
+	private final static String ACTION_UPDATE_TIME = "cn.ingenic.weatherwidget.update_time";
+	public final static String ACTION_UPDATE_SKIN = "cn.ingenic.weatherwidget.update_skin";
+	
+	private PendingIntent mFreshIntent;
 	
 	@Override
 	public void onEnabled(Context context) {
 		super.onEnabled(context);
 		klilog.i("onEnabled");
-		updateWidgetTime(context);
-//		setWidgetUpdateTime(context);
+		setWidgetUpdateAlarm(context);
+		updateAll(context);
 	}
 
 	@Override
@@ -32,10 +35,17 @@ public class WidgetProvider extends AppWidgetProvider {
 		String action = intent.getAction();
 		klilog.i("WidgetProvider received:"+action);
 		if(ACTION_UPDATE_TIME.equals(action)){
-			updateWidgetTime(context);
+			updateAll(context);
 		}else if(EngineManager.ACTION_FRESH_WIDGET.equals(action)){
 			updateWidgetWeather(context, intent.getExtras());
+		}else if(ACTION_UPDATE_SKIN.equals(action)){
+			updateAll(context);
 		}
+	}
+	
+	private void updateAll(Context context){
+		updateWidgetTime(context);
+		EngineManager.getInstance(context).updateWidget();
 	}
 	
 
@@ -67,22 +77,28 @@ public class WidgetProvider extends AppWidgetProvider {
 	public void onDisabled(Context context) {
 		super.onDisabled(context);
 		klilog.i("onDisabled");
-//		removeWidgetUpdateTime(context);
+		removeWidgetUpdateAlarm(context);
 	}
 	
 	private void updateWidgetWeather(Context context, Bundle bundle){
 		klilog.i("updateWidgetWeather");
-		WidgetViewBuilder builder = getDefaultBuilder(context);
-		builder.setWeather(bundle);
+		WidgetViewBuilder builder = getWidgetBuilder(context);
+		if(builder == null){
+			return;
+		}
+		builder.updateWeather(true);
+		builder.setWeatherData(bundle);
 		notifyWidget(context, builder.build());
 	}
 	
 	private void updateWidgetTime(Context context){
-		klilog.i("updateWidgetWeather");
-		WidgetViewBuilder builder = getDefaultBuilder(context);
-		builder.setUpdateTime(true);
+		klilog.i("updateWidgetTime");
+		WidgetViewBuilder builder = getWidgetBuilder(context);
+		if(builder == null){
+			return;
+		}
+		builder.updateTime(true);
 		notifyWidget(context, builder.build());
-		setWidgetUpdateTime(context);
 	}
 	
 	private void notifyWidget(Context context, RemoteViews rv){
@@ -95,9 +111,9 @@ public class WidgetProvider extends AppWidgetProvider {
 		awm.updateAppWidget(appIds, rv);
 	}
 	
-	private void setWidgetUpdateTime(Context context) {
+	private void setWidgetUpdateAlarm(Context context) {
 		AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-		PendingIntent sender = getUpdateTimePendingIntent(context);
+		mFreshIntent = getUpdateTimePendingIntent(context);
 		int interval = 1000 * 60;
 
 		Calendar notify = Calendar.getInstance();
@@ -106,7 +122,14 @@ public class WidgetProvider extends AppWidgetProvider {
 		notify.set(Calendar.SECOND, 0);
 		notify.set(Calendar.MILLISECOND, 0);
 		
-		am.setRepeating(AlarmManager.RTC_WAKEUP, notify.getTimeInMillis(), interval, sender);
+		am.setRepeating(AlarmManager.RTC_WAKEUP, notify.getTimeInMillis(), interval, mFreshIntent);
+	}
+	
+	private void removeWidgetUpdateAlarm(Context context) {
+		if(mFreshIntent != null){
+			AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+			am.cancel(mFreshIntent);
+		}
 	}
 	
 	private PendingIntent getUpdateTimePendingIntent(Context context){
@@ -114,37 +137,10 @@ public class WidgetProvider extends AppWidgetProvider {
 		return  PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 	}
 	
-	private WidgetViewBuilder getDefaultBuilder(Context context){
-		WidgetViewBuilder builder = new WidgetViewBuilder(context);
-		builder.setLayout(R.layout.widget_layout);
-		int[] numRes = {R.drawable.n0, R.drawable.n1, R.drawable.n2, 
-				R.drawable.n3, R.drawable.n4, R.drawable.n5, R.drawable.n6, 
-				R.drawable.n7, R.drawable.n8, R.drawable.n9, 
-				R.drawable.am, R.drawable.pm};
-		builder.setNumRes(numRes);
+	private WidgetViewBuilder getWidgetBuilder(Context context){
+		WidgetViewBuilder builder = new WidgetViewBuilder(context, 
+				SkinManager.getInstance(context).getCurrentSkin());
 		return builder;
-	}
-	
-	
-	private WidgetViewBuilder getRemoteSkin(Context context) {
-		try {
-			Context remoteContext = context.createPackageContext("cn.ingenic.weather.skin.styleyu",
-					Context.CONTEXT_IGNORE_SECURITY|Context.CONTEXT_INCLUDE_CODE);
-			
-			WidgetViewBuilder builder = new WidgetViewBuilder(context);
-			builder.setRemoteContext(remoteContext);
-			builder.setLayout(R.layout.widget_layout);
-			
-			int[] numRes = { R.drawable.n0, R.drawable.n1, R.drawable.n2,
-					R.drawable.n3, R.drawable.n4, R.drawable.n5, R.drawable.n6,
-					R.drawable.n7, R.drawable.n8, R.drawable.n9, R.drawable.am,
-					R.drawable.pm };
-			builder.setNumRes(numRes);
-			return builder;
-		} catch (NameNotFoundException e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 	
 }

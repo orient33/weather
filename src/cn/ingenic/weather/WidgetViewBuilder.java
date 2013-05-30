@@ -1,84 +1,94 @@
 package cn.ingenic.weather;
 
-import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 import android.content.Context;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.res.Resources.NotFoundException;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 
 public class WidgetViewBuilder {
 	private final static boolean HOUR_24 = false;
 	
-	private int mLayout;
 	private Context mContext;
-	private Context mRemoteContext;
 	private RemoteViews mRv;
-	private int[] mNumRes;
 	private Bundle mWeatherData;
 	private boolean mUpdateTime;
+	private boolean mUpdateWeather;
+	private Skin mSkin;
 	
-	WidgetViewBuilder(Context context){
+	WidgetViewBuilder(Context context, Skin skin){
 		mContext = context;
+		mSkin = skin;
 	}
 	
-	public void setRemoteContext(Context context){
-		mRemoteContext = context;
-	}
-	
-	public void setLayout(int layout){
-		mLayout = layout;
-	}
-	
-	public void setNumRes(int[] res){
-		mNumRes = res;
-	}
-	
-	public void setUpdateTime(boolean update){
+	public void updateTime(boolean update){
 		mUpdateTime = update;
 	}
 	
-	public void setWeather(Bundle data){
+	public void updateWeather(boolean update){
+		mUpdateWeather = update;
+	}
+	
+	public void setWeatherData(Bundle data){
 		mWeatherData = data;
 	}
 	
 	public RemoteViews build(){
-		if(mLayout == 0 || mNumRes == null){
-			return null;
-		}
-		
-		if(mRemoteContext == null){
-			buildFromDefault();
-		}else{
-			buildFromRemote();
-		}
-		
+		buildFromRemote();
 		return mRv;
+	}
+	
+	private int getId(String resName){
+		try {
+			return mSkin.getId(resName);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	private int getNumId(int i){
+		return getId(Skin.NUMBERS[i]);
 	}
 	
 	private void buildFromRemote(){
 
-		String pkg = mRemoteContext.getPackageName();
-
-		RemoteResUtils utils = new RemoteResUtils(mContext, mRemoteContext);
-		mRv = new RemoteViews(pkg, mLayout);
-		
-		if(mWeatherData != null){
-			mRv.setTextViewText(R.id.tv_city, mWeatherData.getString("city"));
-			mRv.setTextViewText(R.id.tv_weather, mWeatherData.getString("weather"));
-			mRv.setTextViewText(R.id.tv_current, mWeatherData.getString("current_temp"));
-			mRv.setTextViewText(R.id.tv_min, mWeatherData.getString("min_temp"));
-			mRv.setTextViewText(R.id.tv_max, mWeatherData.getString("max_temp"));
-			int icon = mWeatherData.getInt("icon", 0);
-			if(icon != 0){
-				mRv.setImageViewResource(R.id.iv_icon, icon);
+		mRv = new RemoteViews(mSkin.getPackageName(), getId(Skin.layout.widget_layout));
+		if(mUpdateWeather){
+			if(mWeatherData != null){
+				mRv.setViewVisibility(getId(Skin.id.tv_weather), View.VISIBLE);
+				mRv.setViewVisibility(getId(Skin.id.tv_current),View.VISIBLE);
+				mRv.setViewVisibility(getId(Skin.id.tv_min), View.VISIBLE);
+				mRv.setViewVisibility(getId(Skin.id.tv_min_to_max), View.VISIBLE);
+				mRv.setViewVisibility(getId(Skin.id.tv_max), View.VISIBLE);
+				mRv.setViewVisibility(getId(Skin.id.iv_icon), View.VISIBLE);
+				
+				mRv.setTextViewText(getId(Skin.id.tv_city), mWeatherData.getString("city"));
+				mRv.setTextViewText(getId(Skin.id.tv_weather), mWeatherData.getString("weather"));
+				mRv.setTextViewText(getId(Skin.id.tv_current), mWeatherData.getString("current_temp"));
+				mRv.setTextViewText(getId(Skin.id.tv_min), mWeatherData.getString("min_temp"));
+				mRv.setTextViewText(getId(Skin.id.tv_max), mWeatherData.getString("max_temp"));
+				int icon = mWeatherData.getInt("icon", 0);
+				if(icon != 0){
+					BitmapDrawable bd = (BitmapDrawable)mContext.getResources().getDrawable(icon);
+					mRv.setImageViewBitmap(getId(Skin.id.iv_icon), bd.getBitmap());
+				}
+			}else{
+				mRv.setViewVisibility(getId(Skin.id.tv_weather), View.INVISIBLE);
+				mRv.setViewVisibility(getId(Skin.id.tv_current),View.INVISIBLE);
+				mRv.setViewVisibility(getId(Skin.id.tv_min), View.INVISIBLE);
+				mRv.setViewVisibility(getId(Skin.id.tv_min_to_max), View.INVISIBLE);
+				mRv.setViewVisibility(getId(Skin.id.tv_max), View.INVISIBLE);
+				mRv.setViewVisibility(getId(Skin.id.iv_icon), View.INVISIBLE);
+				mRv.setTextViewText(getId(Skin.id.tv_city), mContext.getString(R.string.no_weather_data));
 			}
 		}
 		
@@ -87,168 +97,27 @@ public class WidgetViewBuilder {
 			int hour = c.get(Calendar.HOUR_OF_DAY);
 			int minite = c.get(Calendar.MINUTE);
 			if(HOUR_24){
-				mRv.setImageViewResource(R.id.iv_time_1, mNumRes[hour/10]);
-				mRv.setImageViewResource(R.id.iv_time_2, mNumRes[hour%10]);
-				mRv.setViewVisibility(R.id.iv_time_apm, View.GONE);
+				mRv.setImageViewResource(getId(Skin.id.iv_time_1), getNumId(hour/10));
+				mRv.setImageViewResource(getId(Skin.id.iv_time_2), getNumId(hour%10));
+				mRv.setViewVisibility(getId(Skin.id.iv_time_apm), View.GONE);
 			}else{
-				mRv.setImageViewResource(R.id.iv_time_1, hour > 12 ? mNumRes[(hour - 12)/10] : mNumRes[hour/10]);
-				mRv.setImageViewResource(R.id.iv_time_2, hour > 12 ? mNumRes[(hour - 12)%10] : mNumRes[hour%10]);
-				mRv.setViewVisibility(R.id.iv_time_apm, View.VISIBLE);
-				mRv.setImageViewResource(R.id.iv_time_apm, hour > 12 ? mNumRes[11] : mNumRes[10]);
+				mRv.setImageViewResource(getId(Skin.id.iv_time_1), hour > 12 ? getNumId((hour - 12)/10) : getNumId(hour/10));
+				mRv.setImageViewResource(getId(Skin.id.iv_time_2), hour > 12 ? getNumId((hour - 12)%10) : getNumId(hour%10));
+				mRv.setViewVisibility(getId(Skin.id.iv_time_apm), View.VISIBLE);
+				mRv.setImageViewResource(getId(Skin.id.iv_time_apm), hour > 12 ? getNumId(11) : getNumId(10));
 			}
-			mRv.setImageViewResource(R.id.iv_time_3, mNumRes[minite/10]);
-			mRv.setImageViewResource(R.id.iv_time_4, mNumRes[minite%10]);
-			
-			int i = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-			String[] days;
-			try {
-				days = mRemoteContext.getResources().getStringArray(R.array.weekday);
-			} catch (NotFoundException e) {
-				days = mContext.getResources().getStringArray(R.array.weekday);
-			}
-			mRv.setTextViewText(R.id.tv_week, days[i-1]);
-
-			String dateFormat;
-			try {
-				dateFormat = mRemoteContext.getString(R.string.date_format);
-			} catch (Exception e) {
-				dateFormat = mContext.getString(R.string.date_format);
-			}
-			SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-			mRv.setTextViewText(R.id.tv_date, sdf.format(new Date()));
-			
-		}
-		
-		/*
-		if(mWeatherData != null){
-			mRv.setTextViewText(utils.getResId("tv_city"), mWeatherData.getString("city"));
-			mRv.setTextViewText(utils.getResId("tv_weather"), mWeatherData.getString("weather"));
-			mRv.setTextViewText(utils.getResId("tv_current"), mWeatherData.getString("current_temp"));
-			mRv.setTextViewText(utils.getResId("tv_min"), mWeatherData.getString("min_temp"));
-			mRv.setTextViewText(utils.getResId("tv_max"), mWeatherData.getString("max_temp"));
-			int icon = mWeatherData.getInt("icon", 0);
-			if(icon != 0){
-				mRv.setImageViewResource(utils.getResId("iv_icon"), icon);
-			}
-		}
-		
-		if(mUpdateTime){
-			Calendar c = Calendar.getInstance();
-			int hour = c.get(Calendar.HOUR_OF_DAY);
-			int minite = c.get(Calendar.MINUTE);
-			if(HOUR_24){
-				mRv.setImageViewResource(utils.getResId("iv_time_1"), mNumRes[hour/10]);
-				mRv.setImageViewResource(utils.getResId("iv_time_2"), mNumRes[hour%10]);
-				mRv.setViewVisibility(utils.getResId("iv_time_apm"), View.GONE);
-			}else{
-				mRv.setImageViewResource(utils.getResId("iv_time_1"), hour > 12 ? mNumRes[(hour - 12)/10] : mNumRes[hour/10]);
-				mRv.setImageViewResource(utils.getResId("iv_time_2"), hour > 12 ? mNumRes[(hour - 12)%10] : mNumRes[hour%10]);
-				mRv.setViewVisibility(utils.getResId("iv_time_apm"), View.VISIBLE);
-				mRv.setImageViewResource(utils.getResId("iv_time_apm"), hour > 12 ? mNumRes[11] : mNumRes[10]);
-			}
-			mRv.setImageViewResource(utils.getResId("iv_time_3"), mNumRes[minite/10]);
-			mRv.setImageViewResource(utils.getResId("iv_time_4"), mNumRes[minite%10]);
-			
-			int i = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-			String[] days;
-			try {
-				days = mRemoteContext.getResources().getStringArray(utils.getResId("weekday"));
-			} catch (NotFoundException e) {
-				days = mContext.getResources().getStringArray(R.array.weekday);
-			}
-			mRv.setTextViewText(R.id.tv_week, days[i-1]);
-
-			String dateFormat;
-			try {
-				dateFormat = mRemoteContext.getString(utils.getResId("date_format"));
-			} catch (Exception e) {
-				dateFormat = mContext.getString(R.string.date_format);
-			}
-			SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-			mRv.setTextViewText(utils.getResId("tv_date"), sdf.format(new Date()));
-			
-		}*/
-	}
-	
-	private void buildFromDefault(){
-		
-		mRv = new RemoteViews(mContext.getPackageName(), mLayout);
-		
-		if(mWeatherData != null){
-			mRv.setTextViewText(R.id.tv_city, mWeatherData.getString("city"));
-			mRv.setTextViewText(R.id.tv_weather, mWeatherData.getString("weather"));
-			mRv.setTextViewText(R.id.tv_current, mWeatherData.getString("current_temp"));
-			mRv.setTextViewText(R.id.tv_min, mWeatherData.getString("min_temp"));
-			mRv.setTextViewText(R.id.tv_max, mWeatherData.getString("max_temp"));
-			int icon = mWeatherData.getInt("icon", 0);
-			if(icon != 0){
-				mRv.setImageViewResource(R.id.iv_icon, icon);
-			}
-		}
-		
-		if(mUpdateTime){
-			Calendar c = Calendar.getInstance();
-			int hour = c.get(Calendar.HOUR_OF_DAY);
-			int minite = c.get(Calendar.MINUTE);
-			if(HOUR_24){
-				mRv.setImageViewResource(R.id.iv_time_1, mNumRes[hour/10]);
-				mRv.setImageViewResource(R.id.iv_time_2, mNumRes[hour%10]);
-				mRv.setViewVisibility(R.id.iv_time_apm, View.GONE);
-			}else{
-				mRv.setImageViewResource(R.id.iv_time_1, hour > 12 ? mNumRes[(hour - 12)/10] : mNumRes[hour/10]);
-				mRv.setImageViewResource(R.id.iv_time_2, hour > 12 ? mNumRes[(hour - 12)%10] : mNumRes[hour%10]);
-				mRv.setViewVisibility(R.id.iv_time_apm, View.VISIBLE);
-				mRv.setImageViewResource(R.id.iv_time_apm, hour > 12 ? mNumRes[11] : mNumRes[10]);
-			}
-			mRv.setImageViewResource(R.id.iv_time_3, mNumRes[minite/10]);
-			mRv.setImageViewResource(R.id.iv_time_4, mNumRes[minite%10]);
+			mRv.setImageViewResource(getId(Skin.id.iv_time_3), getNumId(minite/10));
+			mRv.setImageViewResource(getId(Skin.id.iv_time_4), getNumId(minite%10));
 			
 			int i = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
 			String[] days = mContext.getResources().getStringArray(R.array.weekday);
-			mRv.setTextViewText(R.id.tv_week, days[i-1]);
+			mRv.setTextViewText(getId(Skin.id.tv_week), days[i-1]);
 
 			String dateFormat = mContext.getString(R.string.date_format);
 			SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-			mRv.setTextViewText(R.id.tv_date, sdf.format(new Date()));
+			mRv.setTextViewText(getId(Skin.id.tv_date), sdf.format(new Date()));
 			
 		}
 	}
-	
-	class RemoteResUtils{
-		private Context mContext;
-		private Context mRemoteContext;
-		RemoteResUtils(Context context, Context remote){
-			mContext = context;
-			mRemoteContext = remote;
-		}
-		
-		int getResId(String resName){
-			return getResIdByName(mContext, mRemoteContext, resName);
-		}
-		
-		private int getResIdByName(Context context, Context remoteContext, String resName){
-			try {
-		        Class<?> c = remoteContext.getClassLoader().loadClass(remoteContext.getPackageName()+".R");
-		        Class<?>[] cl = c.getClasses();
-		        int b =0;
-		        for (int i = 0; i < cl.length; i++) {
-		                Log.d("TAG", cl[i].getSimpleName());
-		                Field field[] = cl[i].getFields();
-		                for (int j = 0; j < field.length; j++) {
-		                        Log.d("TAG", "NAME:"+field[j].getName()+"--VALUE:"+field[j].getInt(field[j].getName()));
-		                        if(field[j].getName().equals(resName)) {
-		                                b = field[j].getInt(field[j].getName());
-		                                Log.d("TAG", "--------id");
-		                        }
-		                };
-		        }
-				return b;
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return 0;
-		}
-	}
-	
 	
 }
