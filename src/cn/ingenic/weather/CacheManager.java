@@ -43,7 +43,9 @@ public class CacheManager {
 		Cursor city_cursor = db.query(DbHelper.TABLE_MARK_CITY, null,
 				null, null, null, null,
 				DbHelper.CITY_ORDER + " asc");
-		return city_cursor.moveToFirst();
+		boolean has = city_cursor.moveToFirst();
+		city_cursor.close();
+		return has;
 	}
 	
 	public City getDefaultCity() {
@@ -57,7 +59,9 @@ public class CacheManager {
 					.getColumnIndex(DbHelper.CITY_INDEX));
 			city.name = city_cursor.getString(city_cursor
 					.getColumnIndex(DbHelper.CITY_NAME));
+            city_cursor.close();
 		} else {
+            city_cursor.close();
 			return null;
 		}
 
@@ -94,6 +98,7 @@ public class CacheManager {
 			}while(weather_cursor.moveToNext());
 		}
 		
+		weather_cursor.close();
 		if(cachedWeathers.size() > 1){
 			city.weather = cachedWeathers;
 		}

@@ -79,7 +79,7 @@ class CityDbHelper extends SQLiteOpenHelper {
 		city.name = cursor.getString(cursor.getColumnIndex(CITY_NAME));
 		city.index = cursor.getString(cursor.getColumnIndex(CITY_INDEX));
 		city.parent = cursor.getString(cursor.getColumnIndex(CITY_PARENT));
-			
+		cursor.close();
 		return city;
 	}
 
@@ -105,6 +105,7 @@ class CityDbHelper extends SQLiteOpenHelper {
 		
 		//translate cursor to list
 		list = getCityFromCursor(cursor);
+		cursor.close();
 		return list;
 	}
 	
