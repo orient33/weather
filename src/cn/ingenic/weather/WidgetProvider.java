@@ -122,7 +122,7 @@ public class WidgetProvider extends AppWidgetProvider {
 		notify.set(Calendar.SECOND, 0);
 		notify.set(Calendar.MILLISECOND, 0);
 		
-		am.setRepeating(AlarmManager.RTC_WAKEUP, notify.getTimeInMillis(), interval, mFreshIntent);
+		am.setRepeating(AlarmManager.RTC, notify.getTimeInMillis(), interval, mFreshIntent);
 	}
 	
 	private void removeWidgetUpdateAlarm(Context context) {
