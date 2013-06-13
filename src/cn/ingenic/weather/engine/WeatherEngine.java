@@ -10,7 +10,7 @@ public class WeatherEngine {
 	public final static int RES_SUCCESS = 0;
 	public final static int RES_FAIL = 1;
 	
-	private final static String WEATHER_COM_CN = "ÖÐÑëÆøÏóÌ¨";
+	private final static String WEATHER_COM_CN = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¨";
 	private final static String WEB_XML = "WebXml";
 	
 	private final static String[] SOURCE_LIST = {WEB_XML, WEATHER_COM_CN};
@@ -68,5 +68,9 @@ public class WeatherEngine {
 	
 	public List<City> getCityList(City city){
 		return mSource.getCityList(city);
+	}
+	
+	public String getCityName(String index){
+	    return mSource.getCityByIndex(index);
 	}
 }

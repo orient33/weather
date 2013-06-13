@@ -68,4 +68,7 @@ public class DataProxy {
 		return mDbHelper.getCityList(city);
 	}
 	
+	public String getCityName(String index){
+	    return mDbHelper.getCityName(index);
+	}
 }

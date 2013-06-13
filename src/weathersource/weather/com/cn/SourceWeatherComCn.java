@@ -119,4 +119,10 @@ public class SourceWeatherComCn implements WeatherSource {
 	public List<City> getCityList(City city) {
 		return mDataProxy.getCityList(city);
 	}
+
+    @Override
+    public String getCityByIndex(String index) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

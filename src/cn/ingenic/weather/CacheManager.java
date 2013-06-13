@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -12,6 +13,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import cn.ingenic.weather.engine.City;
 import cn.ingenic.weather.engine.Weather;
+import cn.ingenic.weather.engine.WeatherEngine;
 
 public class CacheManager {
 	private DbHelper mDbHelper;
@@ -48,7 +50,7 @@ public class CacheManager {
 		return has;
 	}
 	
-	public City getDefaultCity() {
+	public City getDefaultCity(Context context) {
 		City city = new City();
 		SQLiteDatabase db = mDbHelper.getReadableDatabase();
 		Cursor city_cursor = db.query(DbHelper.TABLE_MARK_CITY, null,
@@ -57,8 +59,8 @@ public class CacheManager {
 		if (city_cursor.moveToFirst()) {
 			city.index = city_cursor.getString(city_cursor
 					.getColumnIndex(DbHelper.CITY_INDEX));
-			city.name = city_cursor.getString(city_cursor
-					.getColumnIndex(DbHelper.CITY_NAME));
+//			if(Locale.getDefault().getLanguage().startsWith("zh")){
+			city.name = WeatherEngine.getInstance(context).getCityName(city.index);
             city_cursor.close();
 		} else {
             city_cursor.close();

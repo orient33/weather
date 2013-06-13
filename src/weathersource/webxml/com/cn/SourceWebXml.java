@@ -105,4 +105,9 @@ public class SourceWebXml implements WeatherSource {
 		return mDataProxy.getCityList(city);
 	}
 
+    @Override
+    public String getCityByIndex(String index) {
+        return mDataProxy.getCityName(index);
+    }
+
 }

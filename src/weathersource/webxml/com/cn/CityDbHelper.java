@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -75,10 +76,11 @@ class CityDbHelper extends SQLiteOpenHelper {
 
 		cursor.moveToFirst();
 		
-		MyCity city = new MyCity();
-		city.name = cursor.getString(cursor.getColumnIndex(CITY_NAME));
-		city.index = cursor.getString(cursor.getColumnIndex(CITY_INDEX));
-		city.parent = cursor.getString(cursor.getColumnIndex(CITY_PARENT));
+        MyCity city = getMyCity(cursor,Locale.getDefault().getLanguage().startsWith("zh"));
+//		city.name = cursor.getString(cursor.getColumnIndex(CITY_NAME));
+//		city.index = cursor.getString(cursor.getColumnIndex(CITY_INDEX));
+//		city.parent = cursor.getString(cursor.getColumnIndex(CITY_PARENT));
+//		city=getMyCity(cursor);
 		cursor.close();
 		return city;
 	}
@@ -109,18 +111,34 @@ class CityDbHelper extends SQLiteOpenHelper {
 		return list;
 	}
 	
+	public String getCityName(String index){
+	    Cursor c=getReadableDatabase().query(TABLE_CITY, new String[]{"name","_name"}, "_index="+index, null, null, null, null);
+	    c.moveToFirst();
+	    String name=c.getString(Locale.getDefault().getLanguage().startsWith("zh")?0:1);
+	    c.close();
+	    return name;
+	}
+	
 	private List<City> getCityFromCursor(Cursor cursor){
 		List<City> list = new ArrayList<City>();
+		boolean isZh=Locale.getDefault().getLanguage().startsWith("zh");
 		if(cursor.moveToFirst()){
 			do{
-				MyCity city = new MyCity();
-				city.name = cursor.getString(cursor.getColumnIndex(CITY_NAME));
-				city.index = cursor.getString(cursor.getColumnIndex(CITY_INDEX));
-				city.parent = cursor.getString(cursor.getColumnIndex(CITY_PARENT));
-				list.add(city);
+//				MyCity city = new MyCity();
+//				city.name = cursor.getString(cursor.getColumnIndex(CITY_NAME));
+//				city.index = cursor.getString(cursor.getColumnIndex(CITY_INDEX));
+//				city.parent = cursor.getString(cursor.getColumnIndex(CITY_PARENT));
+				list.add(getMyCity(cursor,isZh));
 			}while(cursor.moveToNext());
 		}
 		return list;
 	}
 	
+	private MyCity getMyCity(Cursor cursor,boolean isZh){
+	    MyCity city = new MyCity();
+        city.name = cursor.getString(cursor.getColumnIndex(isZh?CITY_NAME:"_name"));
+        city.index = cursor.getString(cursor.getColumnIndex(CITY_INDEX));
+        city.parent = cursor.getString(cursor.getColumnIndex(CITY_PARENT));
+        return city;
+	}
 }

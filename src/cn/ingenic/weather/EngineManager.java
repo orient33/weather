@@ -168,7 +168,7 @@ public class EngineManager {
 	public City getDefaultMarkCity(){
 		
 		try {
-			return mCache.getDefaultCity();
+			return mCache.getDefaultCity(mContext);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			return null;
