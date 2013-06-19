@@ -15,7 +15,7 @@ import android.widget.Button;
 import android.widget.RemoteViews;
 
 public class WidgetProvider extends AppWidgetProvider {
-	private final static String ACTION_UPDATE_TIME = "cn.ingenic.weatherwidget.update_time";
+	public final static String ACTION_UPDATE_TIME = "cn.ingenic.weatherwidget.update_time";
 	public final static String ACTION_UPDATE_SKIN = "cn.ingenic.weatherwidget.update_skin";
 	
 	private PendingIntent mFreshIntent;

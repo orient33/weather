@@ -246,6 +246,11 @@ public class EngineManager {
 		updateWidget(getDefaultMarkCity());
 	}
 	
+	public void updateTime(){
+		Intent intent = new Intent(WidgetProvider.ACTION_UPDATE_TIME);
+		mContext.sendBroadcast(intent);
+	}
+	
 	private void updateWidget(City city){
 		Intent intent = new Intent(ACTION_FRESH_WIDGET);
 		if(city != null && city.weather != null){
