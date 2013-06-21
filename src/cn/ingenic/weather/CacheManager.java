@@ -53,15 +53,16 @@ public class CacheManager {
 	public City getDefaultCity(Context context) {
 		City city = new City();
 		SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
 		Cursor city_cursor = db.query(DbHelper.TABLE_MARK_CITY, null,
 				null, null, null, null,
 				DbHelper.CITY_ORDER + " asc");
 		if (city_cursor.moveToFirst()) {
 			city.index = city_cursor.getString(city_cursor
 					.getColumnIndex(DbHelper.CITY_INDEX));
+            city_cursor.close();
 //			if(Locale.getDefault().getLanguage().startsWith("zh")){
 			city.name = WeatherEngine.getInstance(context).getCityName(city.index);
-            city_cursor.close();
 		} else {
             city_cursor.close();
 			return null;
