@@ -13,7 +13,6 @@ public class WeatherReceiver extends BroadcastReceiver {
 		klilog.i("Weather Receiver received action:"+action);
 		if(Intent.ACTION_BOOT_COMPLETED.equals(action)){
 			EngineManager.getInstance(context).updateTime();
-			Toast.makeText(context, "boot complete", Toast.LENGTH_LONG).show();
 		}else if(EngineManager.ACTION_UPDATE_WEATHER.equals(action)){
 			EngineManager.getInstance(context).refreshWeather();
 		}else if(EngineManager.ACTION_NOTIFY_WEATHER.equals(action)){

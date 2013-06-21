@@ -98,7 +98,9 @@ public class WidgetProvider extends AppWidgetProvider {
 			return;
 		}
 		builder.updateTime(true);
-		notifyWidget(context, builder.build());
+		RemoteViews rv = builder.build();
+		klilog.i("updateWidgetTime  rv is null?"+(rv == null));
+		notifyWidget(context, rv);
 	}
 	
 	private void notifyWidget(Context context, RemoteViews rv){

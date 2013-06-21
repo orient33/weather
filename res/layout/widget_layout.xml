@@ -25,7 +25,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:scaleType="fitXY"
-                android:src="@drawable/n1" />
+                android:src="@drawable/n0" />
 
             <ImageView
                 android:id="@+id/iv_time_2"
@@ -33,7 +33,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:scaleType="fitXY"
-                android:src="@drawable/n2" />
+                android:src="@drawable/n0" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -48,7 +48,7 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:scaleType="center"
-                    android:src="@drawable/pm" />
+                    android:src="@drawable/am" />
 
                 <ImageView
                     android:layout_width="match_parent"
@@ -63,7 +63,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:scaleType="fitXY"
-                android:src="@drawable/n3" />
+                android:src="@drawable/n0" />
 
             <ImageView
                 android:id="@+id/iv_time_4"
@@ -71,7 +71,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:scaleType="fitXY"
-                android:src="@drawable/n4" />
+                android:src="@drawable/n0" />
     </LinearLayout>
 
     <!-- weather & details info -->
@@ -101,7 +101,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="3dp"
-                    android:text="@string/unknown"
                     android:textColor="@android:color/white" />
 
                 <TextView
@@ -109,7 +108,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="3dp"
-                    android:text="@string/unknown"
                     android:textColor="@android:color/white" />
             </LinearLayout>
             <!-- city -->
@@ -123,7 +121,7 @@
                     android:id="@+id/tv_city"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/unknown"
+                    android:text="@string/no_weather_data"
                     android:textColor="@android:color/white" />
 
                 <TextView
@@ -146,21 +144,24 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/unknown"
-                    android:textColor="@android:color/white" />
+                    android:textColor="@android:color/white" 
+                    android:visibility="invisible"/>
 
                 <TextView
                     android:id="@+id/tv_min_to_max"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/min_to_max"
-                    android:textColor="@android:color/white" />
+                    android:textColor="@android:color/white"
+                    android:visibility="invisible" />
 
                 <TextView
                     android:id="@+id/tv_max"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/unknown"
-                    android:textColor="@android:color/white" />
+                    android:textColor="@android:color/white"
+                    android:visibility="invisible" />
 
                 <TextView
                     android:id="@+id/tv_current"
@@ -169,7 +170,8 @@
                     android:layout_marginLeft="10dp"
                     android:text="@string/unknown"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@android:color/white" />
+                    android:textColor="@android:color/white"
+                    android:visibility="invisible" />
             </LinearLayout>
 
             <LinearLayout
@@ -192,7 +194,8 @@
                 android:id="@+id/iv_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/a_14" />
+                android:src="@drawable/a_14" 
+                android:visibility="invisible"/>
         </LinearLayout>
     </LinearLayout>
 
