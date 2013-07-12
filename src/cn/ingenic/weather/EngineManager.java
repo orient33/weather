@@ -137,7 +137,7 @@ public class EngineManager {
 				Looper.prepare();
 				City city = mEngine.getWeatherByIndex(index);
 
-				changeUpdateTime(System.currentTimeMillis());
+				freshAlarmTime();
 				
 				if(city != null && city.weather != null){
 					//notify widget
@@ -237,10 +237,12 @@ public class EngineManager {
 		}
 	}
 	
+	/*
 	private void changeUpdateTime(long time){
 		setUpdateTime(time);
 		freshAlarmTime();
 	}
+	*/
 	
 	public void updateWidget(){
 		updateWidget(getDefaultMarkCity());
@@ -337,6 +339,7 @@ public class EngineManager {
 		editor.commit();
 	}
 	
+	/*
 	private long getUpdateTime(){
 		SharedPreferences prefs = mContext.getSharedPreferences(ENGINE_MANAGER, Context.MODE_PRIVATE);
 		return prefs.getLong(KEY_UPDATE_TIME, 0);
@@ -347,7 +350,7 @@ public class EngineManager {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putLong(KEY_UPDATE_TIME, time);
 		editor.commit();
-	}
+	}*/
 	
 	private void setEngineSource(String source){
 		SharedPreferences prefs = mContext.getSharedPreferences(ENGINE_MANAGER, Context.MODE_PRIVATE);

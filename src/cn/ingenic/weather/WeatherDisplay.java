@@ -1,6 +1,7 @@
 package cn.ingenic.weather;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -116,6 +117,12 @@ public class WeatherDisplay extends Activity implements OnClickListener,
 		Weather firstWeather = city.weather.get(0);
 		Weather secondWeather = city.weather.get(1);
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd");
+		
+		//update time
+		TextView updateTime = (TextView)findViewById(R.id.update_time);
+		SimpleDateFormat sdf2 = new SimpleDateFormat("MM/dd HH:mm");
+		String update = getString(R.string.update_time)+sdf2.format(new Date(city.updateTime));
+		updateTime.setText(update);
 		
 		//current weather
 		TextView cityName = (TextView)findViewById(R.id.tv_city_name);

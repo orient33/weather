@@ -63,7 +63,9 @@ public class WeatherEngine {
 	 * Get city weather from internet.
 	 */
 	public City getWeatherByIndex(String index){
-		return mSource.getWeatherByIndex(index);
+		City city = mSource.getWeatherByIndex(index);
+		city.updateTime = System.currentTimeMillis();
+		return city;
 	}
 	
 	public List<City> getCityList(City city){

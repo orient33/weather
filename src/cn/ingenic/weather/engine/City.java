@@ -10,6 +10,7 @@ public class City implements Parcelable{
 	public String name;
 	public String index;
 	public ArrayList<Weather> weather;
+	public long updateTime;
 
 	public static final Parcelable.Creator<City> CREATOR = new Parcelable.Creator<City>() {
 		public City createFromParcel(Parcel in) {
@@ -25,6 +26,8 @@ public class City implements Parcelable{
 			if(in.readInt() == 1){
 				city.weather = (ArrayList<Weather>) in.readSerializable();
 			}
+			
+			city.updateTime = in.readLong();
 
 			return city;
 		}
@@ -66,6 +69,8 @@ public class City implements Parcelable{
 			parcel.writeInt(1);
 			parcel.writeSerializable(weather);
 		}
+		
+		parcel.writeLong(updateTime);
 	}
 	
 

@@ -81,4 +81,5 @@
     <string name="min_to_max">/</string>
     <string name="no_weather_data">No weather data</string>
     <string name="loading">Loading...</string>
+    <string name="update_time">Update time:</string>
 </resources>

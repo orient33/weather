@@ -8,18 +8,22 @@ import java.util.Locale;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.preference.PreferenceManager;
 import cn.ingenic.weather.engine.City;
 import cn.ingenic.weather.engine.Weather;
 import cn.ingenic.weather.engine.WeatherEngine;
 
 public class CacheManager {
 	private DbHelper mDbHelper;
+	private Context mContext;
 	
 	public CacheManager(Context context){
 		mDbHelper = new DbHelper(context);
+		mContext = context;
 	}
 	
 	public List<City> getMarkedCities(){
@@ -81,7 +85,10 @@ public class CacheManager {
 				calweather.setTimeInMillis(time);
 
 				if (sameDay(calweather, calNow)) {
-
+					if(city.updateTime == 0){
+						city.updateTime = weather_cursor.getLong(weather_cursor
+								.getColumnIndex(DbHelper.WEATHER_UPDATE_TIME));
+					}
 					Weather weather = new Weather();
 					weather.currentTemp = weather_cursor.getString(weather_cursor
 							.getColumnIndex(DbHelper.WEATHER_TEMP));
@@ -120,10 +127,18 @@ public class CacheManager {
 	
 	public void cacheWeather(City city){
 		SQLiteDatabase db = mDbHelper.getWritableDatabase();
+		
+		//cache update time
+		ContentValues cv1 = new ContentValues();
+		cv1.put(DbHelper.CITY_UPDATE_TIME, System.currentTimeMillis());
+		db.update(DbHelper.TABLE_MARK_CITY, cv1, DbHelper.CITY_INDEX+"="+city.index, null);
+		
+		//cache weather
+		String currentTemp = city.weather.get(0).currentTemp;
 		for(Weather weather : city.weather){
 			ContentValues cv = new ContentValues();
 			cv.put(DbHelper.WEATHER_INDEX, city.index);
-			cv.put(DbHelper.WEATHER_TEMP, weather.currentTemp);
+			cv.put(DbHelper.WEATHER_TEMP, currentTemp);
 			cv.put(DbHelper.WEATHER_MAX_TEMP, weather.maxTemp);
 			cv.put(DbHelper.WEATHER_MIN_TEMP, weather.minTemp);
 			cv.put(DbHelper.WEATHER_WEATHER, weather.weather);
@@ -134,11 +149,6 @@ public class CacheManager {
 		}
 		db.close();
 	}
-	
-	
-	
-	
-	
 	
 
 	private class DbHelper extends SQLiteOpenHelper {
