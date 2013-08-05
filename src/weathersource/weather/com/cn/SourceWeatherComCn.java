@@ -121,7 +121,7 @@ public class SourceWeatherComCn implements WeatherSource {
 	}
 
     @Override
-    public String getCityByIndex(String index) {
+    public City getCityByIndex(String index) {
         // TODO Auto-generated method stub
         return null;
     }

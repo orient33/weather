@@ -72,7 +72,7 @@ public class WeatherEngine {
 		return mSource.getCityList(city);
 	}
 	
-	public String getCityName(String index){
+	public City getCityByIndex(String index){
 	    return mSource.getCityByIndex(index);
 	}
 }

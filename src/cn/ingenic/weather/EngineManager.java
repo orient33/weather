@@ -363,4 +363,8 @@ public class EngineManager {
 		SharedPreferences prefs = mContext.getSharedPreferences(ENGINE_MANAGER, Context.MODE_PRIVATE);
 		return prefs.getString(KEY_ENGINE_SOURCE, null);
 	}
+	
+	public City getCityByIndex(String index){
+		return mEngine.getCityByIndex(index);
+	}
 }

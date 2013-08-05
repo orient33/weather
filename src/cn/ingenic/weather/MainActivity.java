@@ -22,9 +22,11 @@ public class MainActivity extends Activity {
 				if(mManager.hasDefaultCity()){
 					translateTo(WeatherDisplay.class, null);
 				}else{
-					Bundle bundle = new Bundle();
-					bundle.putBoolean("fromSetting", false);
-					translateTo(CitySelectActivity.class, bundle);
+					mManager.setDefaultMarkCity(mManager.getCityByIndex("792"));
+					translateTo(WeatherDisplay.class, null);
+//					Bundle bundle = new Bundle();
+//					bundle.putBoolean("fromSetting", false);
+//					translateTo(CitySelectActivity.class, bundle);
 				}
 				break;
 			}

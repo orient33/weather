@@ -62,11 +62,11 @@ public class CacheManager {
 				null, null, null, null,
 				DbHelper.CITY_ORDER + " asc");
 		if (city_cursor.moveToFirst()) {
-			city.index = city_cursor.getString(city_cursor
+			String index = city_cursor.getString(city_cursor
 					.getColumnIndex(DbHelper.CITY_INDEX));
             city_cursor.close();
 //			if(Locale.getDefault().getLanguage().startsWith("zh")){
-			city.name = WeatherEngine.getInstance(context).getCityName(city.index);
+			city = WeatherEngine.getInstance(context).getCityByIndex(index);
 		} else {
             city_cursor.close();
 			return null;

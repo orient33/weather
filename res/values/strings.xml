@@ -41,7 +41,7 @@
     <string name="sheshidu">℃</string>
     <string name="qiwen_separator">气温：</string>
 
-    <string name="error">error！</string>
+    <string name="error">Request weather infomation failed！</string>
     
     <!-- settings -->
     <string name="settings_city_select">Select city</string>
