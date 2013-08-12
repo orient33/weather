@@ -171,6 +171,7 @@ public class EngineManager {
 			return mCache.getDefaultCity(mContext);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
 			return null;
 		}
 		

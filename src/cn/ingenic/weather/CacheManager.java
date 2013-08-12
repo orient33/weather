@@ -64,13 +64,13 @@ public class CacheManager {
 		if (city_cursor.moveToFirst()) {
 			String index = city_cursor.getString(city_cursor
 					.getColumnIndex(DbHelper.CITY_INDEX));
-            city_cursor.close();
 //			if(Locale.getDefault().getLanguage().startsWith("zh")){
 			city = WeatherEngine.getInstance(context).getCityByIndex(index);
+			city.updateTime = city_cursor.getLong(city_cursor.getColumnIndex(DbHelper.CITY_UPDATE_TIME));
 		} else {
-            city_cursor.close();
 			return null;
 		}
+        city_cursor.close();
 
 		ArrayList<Weather> cachedWeathers = new ArrayList<Weather>();
 		Cursor weather_cursor = db.query(DbHelper.TABLE_WEATHER_CACHE, null,

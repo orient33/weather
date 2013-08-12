@@ -92,7 +92,9 @@ public class WeatherDisplay extends Activity implements OnClickListener,
 		super.onResume();
 	    //get weather
 	    final City city = mEngine.getDefaultMarkCity();
-	    if(city.weather != null){
+	    if(city == null){
+	    	return;
+	    }else if(city.weather != null){
 	    	Message msg = mHandler.obtainMessage(MSG_SHOW_WEATHER);
 	    	msg.obj = city;
 	    	msg.sendToTarget();
@@ -123,6 +125,7 @@ public class WeatherDisplay extends Activity implements OnClickListener,
 		SimpleDateFormat sdf2 = new SimpleDateFormat("MM/dd HH:mm");
 		String update = getString(R.string.update_time)+sdf2.format(new Date(city.updateTime));
 		updateTime.setText(update);
+		updateTime.setShadowLayer(2F, 2F,1F, Color.BLACK);
 		
 		//current weather
 		TextView cityName = (TextView)findViewById(R.id.tv_city_name);
