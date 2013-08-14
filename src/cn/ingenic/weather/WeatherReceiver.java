@@ -12,6 +12,7 @@ public class WeatherReceiver extends BroadcastReceiver {
 		String action = intent.getAction();
 		klilog.i("Weather Receiver received action:"+action);
 		if(Intent.ACTION_BOOT_COMPLETED.equals(action)){
+			EngineManager.getInstance(context).refreshWeather();
 			EngineManager.getInstance(context).updateTime();
 		}else if(EngineManager.ACTION_UPDATE_WEATHER.equals(action)){
 			EngineManager.getInstance(context).refreshWeather();

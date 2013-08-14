@@ -9,6 +9,7 @@ public class WeatherApp extends Application {
 		super.onCreate();
 		klilog.i("WeatherApp onCreate update widget");
 		EngineManager.getInstance(this).updateTime();
+		EngineManager.getInstance(this).init(null);
 	}
 
 }

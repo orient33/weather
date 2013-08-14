@@ -33,7 +33,7 @@
         <receiver 
             android:name="cn.ingenic.weather.WeatherReceiver">
             <intent-filter>
-                <!--<action android:name="android.intent.action.BOOT_COMPLETED"/>-->
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="cn.indroid.action.updateweather"/>
                 <action android:name="cn.indroid.action.notifyweather"/>
                 <action android:name="cn.indroid.action.weather.freshwidgettime"/>

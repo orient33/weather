@@ -97,7 +97,9 @@ public class EngineManager {
 			public void run() {
 				super.run();
 				mEngine.init(getEngineSource());
-				callback.sendToTarget();
+				if(callback != null){
+					callback.sendToTarget();
+				}
 			}
 		}.start();
 	}
