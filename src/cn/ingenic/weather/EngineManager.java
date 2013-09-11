@@ -220,8 +220,8 @@ public class EngineManager {
 		Notification.Builder builder = new Notification.Builder(mContext);
 		Notification notif = builder.setContentTitle(mContext.getString(R.string.weather_warning))
 				.setContentText(city.name+" "+WeatherUtils.getWeather(mContext, weather.weather))
-				.setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), WeatherUtils.getMDrawable(weather.weather)))
-				.setSmallIcon(WeatherUtils.getMDrawable(weather.weather))
+				.setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.bad_weather))
+				.setSmallIcon(R.drawable.bad_weather)
 				.setContentIntent(intent)
 				.build();
 				
