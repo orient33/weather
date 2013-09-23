@@ -148,7 +148,7 @@ public class EngineManager {
 					mCache.cacheWeather(city);
 				}
 				isRequesting = false;
-				notifyWeatherChanged(city);
+				notifyWeatherChanged(getDefaultMarkCity());
 				notifyStateChanged(isRequesting);
 				Looper.loop();
 			}
@@ -188,7 +188,7 @@ public class EngineManager {
 
 				@Override
 				public void onWeatherChanged(City city) {
-					if(city.weather != null){
+					if(city != null && city.weather != null){
 						checkNotifyWeather();
 					}
 					EngineManager.this.unRegister(this);
