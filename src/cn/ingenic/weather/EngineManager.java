@@ -223,6 +223,7 @@ public class EngineManager {
 				.setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.bad_weather))
 				.setSmallIcon(R.drawable.bad_weather)
 				.setContentIntent(intent)
+				.setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS)
 				.build();
 				
 		notifManager.notify(1, notif);
