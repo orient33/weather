@@ -29,6 +29,7 @@
             android:name="CommandReceiver">
             <intent-filter>
                 <action android:name="cn.ingenic.action.weather"/>
+                <action android:name="cn.ingenic.action.weather.first.bind"/>
             </intent-filter>
         </receiver>
         <receiver 
