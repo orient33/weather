@@ -127,12 +127,14 @@ public class CacheManager {
 	
 	public void cacheWeather(City city){
 		SQLiteDatabase db = mDbHelper.getWritableDatabase();
-		
+		long update_time=System.currentTimeMillis();
 		//cache update time
 		ContentValues cv1 = new ContentValues();
-		cv1.put(DbHelper.CITY_UPDATE_TIME, System.currentTimeMillis());
+		cv1.put(DbHelper.CITY_UPDATE_TIME, update_time);
 		db.update(DbHelper.TABLE_MARK_CITY, cv1, DbHelper.CITY_INDEX+"="+city.index, null);
 		
+		// before store cache, delete the old data. 
+		db.delete(DbHelper.TABLE_WEATHER_CACHE, null, null);
 		//cache weather
 		String currentTemp = city.weather.get(0).currentTemp;
 		for(Weather weather : city.weather){
@@ -144,7 +146,7 @@ public class CacheManager {
 			cv.put(DbHelper.WEATHER_WEATHER, weather.weather);
 			cv.put(DbHelper.WEATHER_WIND, weather.wind);
 			cv.put(DbHelper.WEATHER_DATE, weather.calendar.getTimeInMillis());
-			cv.put(DbHelper.WEATHER_UPDATE_TIME, System.currentTimeMillis());
+			cv.put(DbHelper.WEATHER_UPDATE_TIME, update_time);
 			db.insert(DbHelper.TABLE_WEATHER_CACHE, null, cv);
 		}
 		db.close();
